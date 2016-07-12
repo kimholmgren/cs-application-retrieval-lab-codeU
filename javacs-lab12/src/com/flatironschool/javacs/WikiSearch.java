@@ -60,8 +60,17 @@ public class WikiSearch {
 	 * @return New WikiSearch object.
 	 */
 	public WikiSearch or(WikiSearch that) {
-        // FILL THIS IN!
-		return null;
+    Map<String, Integer> map = that.map;
+    for (String curr : this.map.keySet()) {
+    	if(that.map.containsKey(curr)) {
+    		Integer newvalue = this.map.get(curr) + that.map.get(curr);
+    		map.remove(curr);
+    		map.put(curr, newvalue);
+    	} else {
+    		map.put(curr, this.map.get(curr));
+    	}
+    }
+		return new WikiSearch(map);
 	}
 	
 	/**
@@ -71,8 +80,13 @@ public class WikiSearch {
 	 * @return New WikiSearch object.
 	 */
 	public WikiSearch and(WikiSearch that) {
-        // FILL THIS IN!
-		return null;
+    Map<String, Integer> map = new HashMap();
+    for (String curr : this.map.keySet()) {
+    	if(that.map.containsKey(curr)) {
+    		map.put(curr, that.map.get(curr) + this.map.get(curr));
+    	}
+    }
+		return new WikiSearch(map);
 	}
 	
 	/**
@@ -82,8 +96,13 @@ public class WikiSearch {
 	 * @return New WikiSearch object.
 	 */
 	public WikiSearch minus(WikiSearch that) {
-        // FILL THIS IN!
-		return null;
+    Map<String, Integer> map = new HashMap();
+    for (String curr : this.map.keySet()) {
+    	if(!that.map.containsKey(curr)) {
+    		map.put(curr, this.map.get(curr));
+    	}
+    }
+		return new WikiSearch(map);
 	}
 	
 	/**
@@ -104,9 +123,41 @@ public class WikiSearch {
 	 * @return List of entries with URL and relevance.
 	 */
 	public List<Entry<String, Integer>> sort() {
-        // FILL THIS IN!
-		return null;
+		List<Entry<String, Integer>> list = new LinkedList<Entry<String, Integer>>(this.map.entrySet());
+		Collections.sort(list, new Comparator<Entry<String, Integer>>()
+		{
+			public int compare(Entry<String, Integer> entry1, Entry<String, Integer> entry2) {
+				return entry1.getValue().compareTo(entry2.getValue());
+			}
+
+		});
+
+		List<Entry<String, Integer>> sortedList = new LinkedList<Entry<String, Integer>>();
+		for(Entry<String, Integer> curr : list) {
+			sortedList.add(curr);
+		}
+
+		return sortedList;
 	}
+
+
+
+/*
+
+    List<Entry<String, Integer>> list = new Comparator<Entry<String, Integer>>();
+		return Collections.sort(this.map, comparator);
+	}
+
+	Comparator<Entry<String, Integer>> comparator = new Comparator<Entry<String, Integer>>();
+	public int compare(Entry<String, Integer> first, Entry<String, Integer> second) {
+		if(first.getValue()>second.getValue()) {
+			return 1;
+		}
+		if(first.getValue()<second.getValue()) {
+			return -1;
+		}
+		return 0;
+	}*/
 
 	/**
 	 * Performs a search and makes a WikiSearch object.
